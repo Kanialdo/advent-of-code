@@ -8,31 +8,27 @@ object Day01 {
 
     fun part1(numbers: List<Int>): Int {
         var result = 0
-        var lastNumber = 0
-        numbers.forEachIndexed { id, value ->
-            if (id != 0 && value > lastNumber) {
+        for (i in 1 until numbers.size) {
+            if (numbers[i - 1] < numbers[i]) {
                 result++
             }
-            lastNumber = value
         }
         return result
     }
+
+    fun part1Alternative(numbers: List<Int>) = numbers.windowed(2).count { (a, b) -> a < b }
 
     fun part2(numbers: List<Int>): Int {
         var result = 0
-        var lastSum = numbers[0] + numbers[1] + numbers[2]
-        var currentSum = 0
-
         for (i in 3 until numbers.size) {
-            currentSum = lastSum - numbers[i - 3] + numbers[i]
-            if (currentSum > lastSum) {
+            if (numbers[i - 3] < numbers[i]) {
                 result++
             }
-            lastSum = currentSum
         }
-
         return result
     }
+
+    fun part2Alternative(numbers: List<Int>) = numbers.windowed(4).count { it[0] < it[3] }
 }
 
 fun main() {
