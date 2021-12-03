@@ -1,10 +1,11 @@
 package day01
 
+import utils.verify
 import java.io.File
 
 /** https://adventofcode.com/2021/day/1 */
 
-object Day01 {
+fun main() {
 
     fun part1(numbers: List<Int>): Int {
         var result = 0
@@ -29,12 +30,20 @@ object Day01 {
     }
 
     fun part2Alternative(numbers: List<Int>) = numbers.windowed(4).count { it[0] < it[3] }
-}
 
-fun main() {
+    // ---- TEST
+
+    val testNumbers = File("src/day01/input_test.txt").readLines().map(String::toInt)
+
+    verify(7, part1(testNumbers))
+    verify(7, part1Alternative(testNumbers))
+    verify(5, part2(testNumbers))
+    verify(5, part2Alternative(testNumbers))
+
+    // ---- RUN
 
     val numbers = File("src/day01/input.txt").readLines().map(String::toInt)
 
-    println("Result - part1: ${Day01.part1(numbers)}")
-    println("Result - part2: ${Day01.part2(numbers)}")
+    verify(1624, part1(numbers))
+    verify(1653, part2(numbers))
 }

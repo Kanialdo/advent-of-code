@@ -1,8 +1,20 @@
 package day02
 
+import utils.verify
 import java.io.File
 
-object Day02 {
+fun main() {
+
+    data class Move(val position: Int, val depth: Int)
+
+    fun parseMove(value: String) = value.split(" ").let {
+        when (it[0]) {
+            "forward" -> Move(it[1].toInt(), 0)
+            "up" -> Move(0, -it[1].toInt())
+            "down" -> Move(0, it[1].toInt())
+            else -> throw IllegalStateException()
+        }
+    }
 
     fun part1(moves: List<Move>): Int {
         var position = 0
@@ -26,22 +38,17 @@ object Day02 {
         return position * depth
     }
 
-    fun parseMove(value: String) = value.split(" ").let {
-        when (it[0]) {
-            "forward" -> Move(it[1].toInt(), 0)
-            "up" -> Move(0, -it[1].toInt())
-            "down" -> Move(0, it[1].toInt())
-            else -> throw IllegalStateException()
-        }
-    }
+    // ----- TEST
 
-    data class Move(val position: Int, val depth: Int)
-}
+    val testMoves = File("src/day02/input_test.txt").readLines().map(::parseMove)
 
-fun main() {
+    verify(150, part1(testMoves))
+    verify(900, part2(testMoves))
 
-    val moves = File("src/day02/input.txt").readLines().map(Day02::parseMove)
+    // ---- RUN
 
-    println("Result - part1: ${Day02.part1(moves)}")
-    println("Result - part2: ${Day02.part2(moves)}")
+    val moves = File("src/day02/input.txt").readLines().map(::parseMove)
+
+    verify(1924923, part1(moves))
+    verify(1982495697, part2(moves))
 }
