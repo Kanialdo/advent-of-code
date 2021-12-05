@@ -3,6 +3,8 @@ package day02
 import utils.verify
 import java.io.File
 
+/** https://adventofcode.com/2021/day/2 */
+
 fun main() {
 
     data class Move(val position: Int, val depth: Int)
