@@ -3,30 +3,29 @@ package dayXX
 import utils.verify
 import java.io.File
 
-/** https://adventofcode.com/2021/day/TODO */
+/** https://adventofcode.com/2021/day/XX */
 
 fun main() {
 
-    fun part1(numbers: List<String>): Int {
-        return TODO()
+    val rootDir = File("src/dayXX/")
+
+    fun part1(data: List<String>): Int {
+        return -1
     }
 
 
-    fun part2(numbers: List<String>): Int {
-        return TODO()
+    fun part2(data: List<String>): Int {
+        return -1
     }
-
-    // ---- TEST
-
-    val testNumbers = File("src/dayXX/input_test.txt").readLines()
-
-    verify(TODO(), part1(testNumbers))
-    verify(TODO(), part2(testNumbers))
 
     // ---- RUN
 
-    val numbers = File("src/dayXX/input.txt").readLines()
+    val testData = File(rootDir, "input_test.txt").readLines()
+    val data = File(rootDir, "input.txt").readLines()
 
-    verify(TODO(), part1(numbers))
-    verify(TODO(), part2(numbers))
+    verify(0, part1(testData))
+    verify(0, part1(data))
+
+    verify(0, part2(testData))
+    verify(0, part2(data))
 }
