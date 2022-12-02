@@ -4,18 +4,9 @@ fun main() {
         val rounds = input.lines()
         var score = 0
         rounds.forEach { round ->
-            score += when (round) {
-                "A X" -> 1 + 3
-                "A Y" -> 2 + 6
-                "A Z" -> 3 + 0
-                "B X" -> 1 + 0
-                "B Y" -> 2 + 3
-                "B Z" -> 3 + 6
-                "C X" -> 1 + 6
-                "C Y" -> 2 + 0
-                "C Z" -> 3 + 3
-                else -> 0
-            }
+            val left = round[0].code - 'A'.code
+            val right = round[2].code - 'X'.code
+            score += (right - left + 4) % 3 * 3 + right % 3 + 1
         }
         return score
     }
@@ -24,18 +15,9 @@ fun main() {
         val rounds = input.lines()
         var score = 0
         rounds.forEach { round ->
-            score += when (round) {
-                "A X" -> 3 + 0
-                "A Y" -> 1 + 3
-                "A Z" -> 2 + 6
-                "B X" -> 1 + 0
-                "B Y" -> 2 + 3
-                "B Z" -> 3 + 6
-                "C X" -> 2 + 0
-                "C Y" -> 3 + 3
-                "C Z" -> 1 + 6
-                else -> 0
-            }
+            val left = round[0].code - 'A'.code
+            val right = round[2].code - 'X'.code
+            score += (left + right + 2) % 3 + 1 + right * 3
         }
         return score
     }
