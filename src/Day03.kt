@@ -1,6 +1,6 @@
 fun main() {
 
-    fun Char.priority() = if (this.isLowerCase()) {
+    fun Char.priority() = if (isLowerCase()) {
         this.code - 'a'.code + 1
     } else {
         this.code - 'A'.code + 27
@@ -9,31 +9,21 @@ fun main() {
     fun part1(input: String): Int {
         val rucksacks = input.lines()
         return rucksacks.sumOf { rucksack ->
-            rucksack.toList().let {
-                val left = it.subList(0, it.size / 2).sorted()
-                val right = it.subList(it.size / 2, it.size).sorted()
-                left.forEach { l ->
-                    right.forEach { r ->
-                        if (l == r) {
-                            return@sumOf l.priority()
-                        }
-                    }
-                }
-            }
-            0
+            rucksack.chunked(size = rucksack.length / 2) // two parts of rucksack
+                .map { it.toSet() } // unique values in each part
+                .flatten().sorted() // sorted list with all unique chars from each part
+                .reduce { acc, x -> if (acc == x) return@sumOf x.priority() else x } // value of first repeated char
+            throw IllegalStateException()
         }
     }
 
     fun part2(input: String): Int {
         val rucksacks = input.lines()
-        return rucksacks.chunked(3).sumOf {
-            val sequence = it.map { it.toSet() }.flatten().sorted()
-            sequence.windowed(3).forEach {
-                if (it[0] == it[1] && it[1] == it[2]) {
-                    return@sumOf it[0].priority()
-                }
-            }
-            0
+        return rucksacks.chunked(3).sumOf { subRucksacks ->
+            subRucksacks.map { it.toSet() } // every rucksack with unique values
+                .flatten().sorted() // sorted list with all unique chars from each rucksack
+                .windowed(3).first { it.toSet().size == 1 } // first sequence with same values
+                .first().priority() // value of shared char
         }
     }
 
