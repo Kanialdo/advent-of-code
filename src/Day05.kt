@@ -3,24 +3,19 @@ fun main() {
     val moveRegex = "move (\\d+) from (\\d+) to (\\d+)".toRegex()
 
     fun part1(input: String): String {
+        val (stack, moves) = input.split("\n\n").map { it.lines() }
+        val size = stack.last().trim().last().digitToInt()
+        val data = List<ArrayDeque<Char>>(size) { ArrayDeque() }
 
-        val (stack, moves) = input.split("\n\n")
-
-        val size = stack.lines().last().split("   ").last().trim().toInt()
-        val data = MutableList<ArrayDeque<Char>>(size) { ArrayDeque() }
-
-        stack.lines().dropLast(1).forEach {
-            it.chunked(4).forEachIndexed { index, value ->
-                val char = value[1]
-                if (char != ' ') {
-                    data[index].addFirst(char)
-                }
+        stack.dropLast(1).forEach { row ->
+            row.chunked(4).forEachIndexed { index, value ->
+                value[1].takeIf { it != ' ' }?.let { data[index].addFirst(it) }
             }
         }
 
-        moves.lines().forEach { move ->
+        moves.forEach { move ->
             val (count, from, to) = moveRegex.find(move)?.groupValues?.drop(1)?.map { it.toInt() } ?: error("Not found")
-            for (i in 0 until count) {
+            repeat(count) {
                 data[to - 1].addLast(data[from - 1].removeLast())
             }
         }
@@ -29,28 +24,23 @@ fun main() {
     }
 
     fun part2(input: String): String {
+        val (stack, moves) = input.split("\n\n").map { it.lines() }
+        val size = stack.last().trim().last().digitToInt()
+        val data = List<ArrayDeque<Char>>(size) { ArrayDeque() }
 
-        val (stack, moves) = input.split("\n\n")
-
-        val size = stack.lines().last().split("   ").last().trim().toInt()
-        val data = MutableList<ArrayDeque<Char>>(size) { ArrayDeque() }
-
-        stack.lines().dropLast(1).forEach {
-            it.chunked(4).forEachIndexed { index, value ->
-                val char = value[1]
-                if (char != ' ') {
-                    data[index].addFirst(char)
-                }
+        stack.dropLast(1).forEach { row ->
+            row.chunked(4).forEachIndexed { index, value ->
+                value[1].takeIf { it != ' ' }?.let { data[index].addFirst(it) }
             }
         }
 
-        moves.lines().forEach { move ->
+        moves.forEach { move ->
             val (count, from, to) = moveRegex.find(move)?.groupValues?.drop(1)?.map { it.toInt() } ?: error("Not found")
-            var toBeMoved = mutableListOf<Char>()
-            for (i in 0 until count) {
-                toBeMoved.add(data[from - 1].removeLast())
+            val buffer = ArrayDeque<Char>()
+            repeat(count) {
+                buffer.addFirst(data[from - 1].removeLast())
             }
-            data[to - 1].addAll(toBeMoved.reversed())
+            data[to - 1].addAll(buffer)
         }
 
         return data.map { it.last() }.joinToString(separator = "")
