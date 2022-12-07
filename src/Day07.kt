@@ -2,39 +2,17 @@ import kotlin.math.min
 
 fun main() {
 
-    data class Node(
+    class Node(
         val name: String,
         val parent: Node?,
         val children: MutableList<Node> = mutableListOf(),
         var size: Int = 0,
-        val isFile: Boolean = false,
-    )
-
-    fun Node.print(index: Int = 0) {
-        print("-".padStart(index * 2, ' ') + " " + name)
-        if (size > 0) {
-            print(" $size")
+    ) {
+        fun print(index: Int = 0) {
+            println("-".padStart(index * 2, ' ') + " " + name)
+            children.forEach { it.print(index + 1) }
         }
-        println()
-        children.forEach { it.print(index + 1) }
     }
-
-    fun Node.updateSize() {
-        children.forEach {
-            it.updateSize()
-        }
-        this.size += children.sumOf { it.size }
-    }
-
-    fun Node.sum(): Int {
-        return children.sumOf { it.sum() } + if (!isFile && size <= 100000) size else 0
-    }
-
-    fun Node.findClosed(value: Int, current: Int = Int.MAX_VALUE): Int {
-        return min(children.minOfOrNull { it.findClosed(value, current) } ?: Int.MAX_VALUE,
-            if (!isFile && size > value) size else Int.MAX_VALUE)
-    }
-
 
     fun buildTree(input: List<String>): Node {
         val root = Node(name = "/", parent = null)
@@ -44,16 +22,26 @@ fun main() {
         input.drop(1).forEach { line ->
             when {
                 line.startsWith("$ cd ..") -> currentNode = currentNode.parent ?: error("No parent")
-                line.startsWith("$ cd") -> currentNode = currentNode.children.first { it.name == line.drop(5) }
+                line.startsWith("$ cd") -> {
+                    val dir = line.drop(5)
+                    currentNode = currentNode.children.first { it.name == dir }
+                }
                 line.startsWith("$ ls") -> Unit
-                line.startsWith("dir") -> currentNode.children.add(Node(name = line.drop(4), parent = currentNode))
+                line.startsWith("dir") -> {
+                    val dir = line.drop(4)
+                    currentNode.children.add(Node(name = dir, parent = currentNode))
+                }
                 else -> {
-                    val (size, name) = line.split(" ")
-                    currentNode.children.add(
-                        Node(name = name, parent = currentNode, size = size.toInt(), isFile = true)
-                    )
+                    currentNode.size += line.split(" ").first().toInt()
                 }
             }
+        }
+
+        fun Node.updateSize() {
+            children.forEach {
+                it.updateSize()
+            }
+            this.size += children.sumOf { it.size }
         }
 
         root.updateSize()
@@ -63,21 +51,26 @@ fun main() {
     fun part1(input: List<String>): Int {
         val root = buildTree(input)
         root.print()
+
+        fun Node.sum(): Int {
+            return children.sumOf { it.sum() } + if (size <= 100000) size else 0
+        }
+
         return root.sum()
     }
 
     fun part2(input: List<String>): Int {
         val root = buildTree(input)
+        val lookingSpace = 30000000 - (70000000 - root.size)
 
-        val totalSize = 70000000
-        val requiredSpace = 30000000
+        fun Node.findClosed(threshold: Int): Int {
+            return min(
+                a = children.minOfOrNull { it.findClosed(threshold) } ?: Int.MAX_VALUE,
+                b = if (size > threshold) size else Int.MAX_VALUE
+            )
+        }
 
-        val occupiedSpace = root.size
-        val freeSpace = totalSize - occupiedSpace
-
-        val missingSpace = requiredSpace - freeSpace
-
-        return root.findClosed(missingSpace)
+        return root.findClosed(lookingSpace)
     }
 
     val testInput = readInput("Day07_test")
