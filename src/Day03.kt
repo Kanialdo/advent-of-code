@@ -28,8 +28,8 @@ fun main() {
     }
 
     val testInput = readInputAsText("Day03_test")
-    check(part1(testInput) == 157)
-    check(part2(testInput) == 70)
+    check(part1(testInput), 157)
+    check(part2(testInput), 70)
 
     val input = readInputAsText("Day03")
     println(part1(input))

@@ -11,8 +11,8 @@ fun main() {
     }
 
     val testInput = readInputAsText("Day01_test")
-    check(part1(testInput) == 24000)
-    check(part2(testInput) == 45000)
+    check(part1(testInput), 24000)
+    check(part2(testInput), 45000)
 
     val input = readInputAsText("Day01")
     println(part1(input))

@@ -47,8 +47,8 @@ fun main() {
     }
 
     val testInput = readInputAsText("Day05_test")
-    check(part1(testInput) == "CMZ")
-    check(part2(testInput) == "MCD")
+    check(part1(testInput), "CMZ")
+    check(part2(testInput), "MCD")
 
     val input = readInputAsText("Day05")
     println(part1(input))

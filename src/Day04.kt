@@ -22,8 +22,8 @@ fun main() {
     }
 
     val testInput = readInput("Day04_test")
-    check(part1(testInput) == 2)
-    check(part2(testInput) == 4)
+    check(part1(testInput), 2)
+    check(part2(testInput), 4)
 
     val input = readInput("Day04")
     println(part1(input))
