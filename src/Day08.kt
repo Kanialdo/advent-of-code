@@ -6,102 +6,75 @@ fun main() {
         val area = input.map { row -> row.toCharArray().map { it.digitToInt() } }
         val visibility = Array(area.size) { BooleanArray(area.first().size) { false } }
 
-        for (y in 1 until area.size - 1) {
+        val dimension = area.size
+
+        for (y in 1 until dimension - 1) {
             var max = area[y].first()
-            for (x in 1 until area.first().size - 1) {
+            for (x in 1 until dimension - 1) {
                 visibility[y][x] = visibility[y][x] || area[y][x] > max
                 max = max(area[y][x], max)
             }
             max = area[y].last()
-            for (x in area.first().size - 2 downTo 1) {
+            for (x in dimension - 2 downTo 1) {
                 visibility[y][x] = visibility[y][x] || area[y][x] > max
                 max = max(area[y][x], max)
             }
         }
-        for (x in 1 until area.first().size - 1) {
+        for (x in 1 until dimension - 1) {
             var max = area.first()[x]
-            for (y in 1 until area.size - 1) {
+            for (y in 1 until dimension - 1) {
                 visibility[y][x] = visibility[y][x] || area[y][x] > max
                 max = max(area[y][x], max)
             }
             max = area.last()[x]
-            for (y in area.first().size - 2 downTo 1) {
+            for (y in dimension - 2 downTo 1) {
                 visibility[y][x] = visibility[y][x] || area[y][x] > max
                 max = max(area[y][x], max)
             }
         }
 
-        for (y in 0 until area.first().size) {
-            for (x in area.indices) {
-                print(area[y][x])
-            }
-            println()
-        }
-
-        println()
-
-        for (y in 0 until area.first().size) {
-            for (x in area.indices) {
-                print(if (visibility[y][x]) "o" else "x")
-            }
-            println()
-        }
+        // for (y in area.first().indices) {
+        //     for (x in area.indices) {
+        //         print(if (visibility[y][x]) "o" else "x")
+        //     }
+        //     println()
+        // }
 
         return visibility.sumOf { it.count { it } } + visibility.size * 4 - 4
     }
 
     fun List<List<Int>>.countRight(x: Int, y: Int): Int {
-        val value = this[y][x]
         var count = 0
-        for (i in x + 1 until this.first().size) {
-            if (value > this[y][i]) {
-                count++
-            } else {
-                count++
-                return count
-            }
+        for (i in x + 1 until size) {
+            count++
+            if (this[y][x] <= this[y][i]) break
         }
         return count
     }
 
     fun List<List<Int>>.countLeft(x: Int, y: Int): Int {
-        val value = this[y][x]
         var count = 0
         for (i in x - 1 downTo 0) {
-            if (value > this[y][i]) {
-                count++
-            } else {
-                count++
-                return count
-            }
+            count++
+            if (this[y][x] <= this[y][i]) break
         }
         return count
     }
 
     fun List<List<Int>>.countTop(x: Int, y: Int): Int {
-        val value = this[y][x]
         var count = 0
-        for (i in y + 1 until this.size) {
-            if (value > this[i][x]) {
-                count++
-            } else {
-                count++
-                return count
-            }
+        for (i in y + 1 until size) {
+            count++
+            if (this[y][x] <= this[i][x]) break
         }
         return count
     }
 
     fun List<List<Int>>.countBottom(x: Int, y: Int): Int {
-        val value = this[y][x]
         var count = 0
         for (i in y - 1 downTo 0) {
-            if (value > this[i][x]) {
-                count++
-            } else {
-                count++
-                return count
-            }
+            count++
+            if (this[y][x] <= this[i][x]) break
         }
         return count
     }
@@ -110,8 +83,10 @@ fun main() {
         val area = input.map { row -> row.toCharArray().map { it.digitToInt() } }
         val score = Array(area.size) { IntArray(area.first().size) { 0 } }
 
-        for (y in 0 until area.first().size) {
-            for (x in area.indices) {
+        val dimension = area.size
+
+        for (y in 1 until  dimension - 1 ) {
+            for (x in 1 until  dimension - 1) {
                 score[y][x] = area.countRight(x = x, y = y) *
                         area.countLeft(x = x, y = y) *
                         area.countBottom(x = x, y = y) *
@@ -119,14 +94,12 @@ fun main() {
             }
         }
 
-        println()
-
-        for (y in 0 until area.first().size) {
-            for (x in area.indices) {
-                print(score[y][x])
-            }
-            println()
-        }
+        // for (y in 0 until dimension) {
+        //     for (x in 0 until dimension) {
+        //         print(score[y][x])
+        //     }
+        //     println()
+        // }
 
         return score.maxOf { it.max() }
     }
