@@ -1,3 +1,5 @@
+// https://adventofcode.com/2024/day/TODO()
+
 fun main() {
 
     fun part1(input: List<String>): Int {

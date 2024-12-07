@@ -35,8 +35,74 @@ fun test(expected: Int, command: () -> Int) {
     }
 }
 
+fun testLong(expected: Long, command: () -> Long) {
+    val result: Long
+    val time = measureTime {
+        result = command()
+    }
+
+    if (expected == result) {
+        println("Test passed in ${time.inWholeMicroseconds} µs")
+    } else {
+        error("Test failed. Expected $expected, but was $result")
+    }
+}
+
+fun testDouble(expected: Double, command: () -> Double) {
+    val result: Double
+    val time = measureTime {
+        result = command()
+    }
+
+    if (expected == result) {
+        println("Test passed in ${time.inWholeMicroseconds} µs")
+    } else {
+        error("Test failed. Expected $expected, but was $result")
+    }
+}
+
+fun testBigInteger(expected: BigInteger, command: () -> BigInteger) {
+    val result: BigInteger
+    val time = measureTime {
+        result = command()
+    }
+
+    if (expected == result) {
+        println("Test passed in ${time.inWholeMicroseconds} µs")
+    } else {
+        error("Test failed. Expected $expected, but was $result")
+    }
+}
+
 fun exec(command: () -> Int) {
     val result: Int
+    val time = measureTime {
+        result = command()
+    }
+
+    println("Result $result in ${time.inWholeMicroseconds} µs")
+}
+
+fun execLong(command: () -> Long) {
+    val result: Long
+    val time = measureTime {
+        result = command()
+    }
+
+    println("Result $result in ${time.inWholeMicroseconds} µs")
+}
+
+fun execDouble(command: () -> Double) {
+    val result: Double
+    val time = measureTime {
+        result = command()
+    }
+
+    println("Result $result in ${time.inWholeMicroseconds} µs")
+}
+
+fun execBigInteger(command: () -> BigInteger) {
+    val result: BigInteger
     val time = measureTime {
         result = command()
     }
