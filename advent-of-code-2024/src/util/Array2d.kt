@@ -53,6 +53,12 @@ class Array2d<Type>(
         }
     }
 
+    fun getPositions(value: Type): List<Point> {
+        return array.mapIndexed { y, list -> list.mapIndexed { x, v -> if (v == value) Point(x, y) else null } }
+            .flatten()
+            .filterNotNull()
+    }
+
     fun isInBounds(point: Point) = isInBounds(point.x, point.y)
 
     fun isInBounds(x: Int, y: Int) = x in 0 until width && y in 0 until height
