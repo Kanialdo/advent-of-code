@@ -1,6 +1,9 @@
 package util
 
 data class Vector(val x: Int, val y: Int) {
+
+    operator fun times(scalar: Int) = Vector(x * scalar, y * scalar)
+
     override fun toString(): String {
         return "[$x, $y]"
     }
