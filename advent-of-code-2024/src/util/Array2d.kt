@@ -1,33 +1,5 @@
 package util
 
-data class Vector(val x: Int, val y: Int) {
-
-    operator fun times(scalar: Int) = Vector(x * scalar, y * scalar)
-
-    override fun toString(): String {
-        return "[$x, $y]"
-    }
-
-    companion object {
-        private val UP = Vector(0, -1)
-        private val DOWN = Vector(0, 1)
-        private val LEFT = Vector(-1, 0)
-        private val RIGHT = Vector(1, 0)
-
-        val DIRECTIONS_4 = listOf(UP, RIGHT, DOWN, LEFT)
-    }
-}
-
-data class Point(val x: Int, val y: Int) {
-
-    operator fun plus(vector: Vector) = Point(x + vector.x, y + vector.y)
-
-    override fun toString(): String {
-        return "[$x, $y]"
-    }
-}
-
-
 class Array2d<Type>(
     val width: Int,
     val height: Int,
@@ -44,6 +16,11 @@ class Array2d<Type>(
     operator fun set(point: Point, value: Type) = set(point.x, point.y, value)
 
     operator fun get(point: Point) = get(point.x, point.y)
+
+    fun setSafe(point: Point, value: Type) = setSafe(point.x, point.y, value)
+    fun setSafe(x: Int, y: Int, value: Type) {
+        if (isInBounds(x, y)) array[y][x] = value
+    }
 
     fun getSafe(point: Point) = getSafe(point.x, point.y)
     fun getSafe(x: Int, y: Int) = if (isInBounds(x, y)) array[y][x] else null
@@ -67,6 +44,8 @@ class Array2d<Type>(
     fun isInBounds(x: Int, y: Int) = x in 0 until width && y in 0 until height
 
     fun createMask(): Array2d<Boolean> = Array2d(width, height, false)
+
+    fun count(filter: (Type) -> Boolean): Int = array.sumOf { it.count { filter(it) } }
 
     fun print(mapper: (Type) -> Char) {
         for (y in array.indices) {
@@ -95,3 +74,7 @@ class Array2d<Type>(
             read(input = input, initValue = -1, mapper = { it.digitToInt() })
     }
 }
+
+fun Array2d<Char>.printChars() = print { it }
+
+fun Array2d<Boolean>.printMask() = print { if (it) '#' else '.' }

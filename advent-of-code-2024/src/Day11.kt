@@ -4,7 +4,6 @@ import java.math.BigInteger
 
 fun main() {
 
-
     data class Cache(private val cache: MutableMap<Pair<Long, Int>, BigInteger> = mutableMapOf()) {
         fun getCache(number: Long, deep: Int): BigInteger? = cache[number to deep]
         fun saveCache(number: Long, deep: Int, result: BigInteger) {

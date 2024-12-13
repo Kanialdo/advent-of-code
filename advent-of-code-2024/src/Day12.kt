@@ -8,14 +8,14 @@ fun main() {
 
     fun part1(input: List<String>): Int {
 
-        val array2d = Array2d.readChar(input)
-        val mask = array2d.createMask()
+        val array = Array2d.readChar(input)
+        val mask = array.createMask()
 
         val vectors = Vector.DIRECTIONS_4
 
         var sum = 0
 
-        array2d.forEach { x, y, value ->
+        array.forEach { x, y, value ->
             if (!mask[x, y]) {
                 var fence = 0
                 val toVisit = mutableSetOf(Point(x, y))
@@ -27,7 +27,7 @@ fun main() {
                         val next = visiting + vector
                         when {
                             next in visited -> Unit
-                            array2d.getSafe(next) == value -> toVisit += next
+                            array.getSafe(next) == value -> toVisit += next
                             else -> fence++
                         }
                     }

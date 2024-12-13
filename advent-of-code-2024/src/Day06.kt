@@ -1,11 +1,5 @@
-enum class Direction(val x: Int, val y: Int) {
-    UP(0, -1),
-    RIGHT(1, 0),
-    DOWN(0, 1),
-    LEFT(-1, 0);
-
-    fun rotate() = entries[(ordinal + 1) % entries.size]
-}
+import util.Point
+import util.Vector
 
 sealed class Field {
     data object Guard : Field()
@@ -47,15 +41,13 @@ data class Array2d(val xSize: Int, val ySize: Int) {
     }
 }
 
-data class Point(val x: Int, val y: Int)
-
 fun main() {
 
     fun part1(input: List<String>): Int {
 
         val array = Array2d(input[0].length, input.size)
         var guardPos = Point(0, 0)
-        var direction = Direction.UP
+        var direction = Vector.UP
 
         input.forEachIndexed { y, list ->
             list.forEachIndexed { x, char ->
@@ -79,7 +71,7 @@ fun main() {
         do {
             // array.printArray()
             while (array[guardPos.x + direction.x, guardPos.y + direction.y] == Field.Wall) {
-                direction = direction.rotate()
+                direction = direction.rotate90()
             }
             array[guardPos.x, guardPos.y] = Field.Visited
             guardPos = Point(guardPos.x + direction.x, guardPos.y + direction.y)

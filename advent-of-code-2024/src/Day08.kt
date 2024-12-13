@@ -1,83 +1,28 @@
+import util.*
+import util.Array2d
+
 // https://adventofcode.com/2024/day/8
 
-data class Point2(val x: Int, val y: Int)
-
-data class Antinodes(val xSize: Int, val ySize: Int) {
-
-    val array = Array(ySize) { Array(xSize) { false } }
-
-    fun isInBounds(x: Int, y: Int) = x in 0 until xSize && y in 0 until ySize
-
-    operator fun get(x: Int, y: Int) = if (isInBounds(x, y)) array[y][x] else null
-    operator fun set(x: Int, y: Int, field: Boolean) {
-        if (isInBounds(x, y)) {
-            array[y][x] = field
-        }
+private fun Array2d<Char>.getPoints(): Map<Char, List<Point>> {
+    val map: MutableMap<Char, MutableSet<Point>> = mutableMapOf()
+    this.forEach { x, y, value ->
+        value
+            .let { it.takeIf { it != '.' } }
+            ?.let { map[it] = map.getOrDefault(it, mutableSetOf()).apply { add(Point(x, y)) } }
     }
-
-    fun count() = array.sumOf { it.count { it } }
-
-    fun printArray() {
-        for (y in array.indices) {
-            for (x in array[y].indices) {
-                print(if (get(x, y)!!) "#" else ".")
-            }
-            println("")
-        }
-        println("")
-    }
-}
-
-data class Antenas(val xSize: Int, val ySize: Int) {
-
-    val array = Array(ySize) { Array<Char?>(xSize) { null } }
-
-    operator fun get(x: Int, y: Int) = if (isInBounds(x, y)) array[y][x] else null
-    operator fun set(x: Int, y: Int, field: Char) {
-        array[y][x] = field
-    }
-
-    fun getPoints(): Map<Char, List<Point>> {
-        val map: MutableMap<Char, MutableSet<Point>> = mutableMapOf()
-        for (y in array.indices) {
-            for (x in array[y].indices) {
-                get(x, y)
-                    ?.let { it.takeIf { it != '.' } }
-                    ?.let { map[it] = map.getOrDefault(it, mutableSetOf()).apply { add(Point(x, y)) } }
-            }
-        }
-        return map.mapValues { it.value.toList() }
-    }
-
-    fun isInBounds(x: Int, y: Int) = x in 0 until xSize && y in 0 until ySize
-
-    fun printArray() {
-        for (y in array.indices) {
-            for (x in array[y].indices) {
-                print(array[y][x])
-            }
-            println("")
-        }
-        println("")
-    }
+    return map.mapValues { it.value.toList() }
 }
 
 fun main() {
 
     fun part1(input: List<String>): Int {
 
-        val antenas = Antenas(input[0].length, input.size)
-        val antinodes = Antinodes(input[0].length, input.size)
+        val antennas = Array2d.readChar(input)
+        val antinodes = antennas.createMask()
 
-        input.forEachIndexed { y, list ->
-            list.forEachIndexed { x, char ->
-                antenas[x, y] = char
-            }
-        }
+        antennas.printChars()
 
-        antenas.printArray()
-
-        antenas.getPoints().forEach { (char, points) ->
+        antennas.getPoints().forEach { (_, points) ->
             for (i in points.indices) {
                 for (j in (i + 1) until points.size) {
                     val dx = points[i].x - points[j].x
@@ -86,30 +31,31 @@ fun main() {
                         Point(points[i].x + dx, points[i].y + dy),
                         Point(points[j].x - dx, points[j].y - dy)
                     ).forEach {
-                        antinodes[it.x, it.y] = true
+                        antinodes.setSafe(it.x, it.y, true)
                     }
                 }
             }
         }
 
-        antinodes.printArray()
+        antinodes.printMask()
 
-        return antinodes.count()
+        return antinodes.count { it }
     }
 
     fun part2(input: List<String>): Int {
-        val antenas = Antenas(input[0].length, input.size)
-        val antinodes = Antinodes(input[0].length, input.size)
+
+        val antennas = Array2d.readChar(input)
+        val antinodes = antennas.createMask()
 
         input.forEachIndexed { y, list ->
             list.forEachIndexed { x, char ->
-                antenas[x, y] = char
+                antennas[x, y] = char
             }
         }
 
-        antenas.printArray()
+        antennas.printChars()
 
-        antenas.getPoints().forEach { (char, points) ->
+        antennas.getPoints().forEach { (_, points) ->
             for (i in points.indices) {
                 for (j in (i + 1) until points.size) {
                     val dx = points[i].x - points[j].x
@@ -130,9 +76,9 @@ fun main() {
             }
         }
 
-        antinodes.printArray()
+        antinodes.printMask()
 
-        return antinodes.count()
+        return antinodes.count { it }
     }
 
     val testInput = readInput("Day08_test")
