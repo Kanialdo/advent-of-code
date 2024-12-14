@@ -1,5 +1,10 @@
 import util.Point
 import util.Vector
+import java.awt.image.BufferedImage
+import java.io.File
+import javax.imageio.ImageIO
+import javax.imageio.ImageWriter
+import javax.swing.text.Position
 import kotlin.math.abs
 
 // https://adventofcode.com/2024/day/14
@@ -7,7 +12,7 @@ import kotlin.math.abs
 fun main() {
 
     data class Robot(
-        val position: Point,
+        var position: Point,
         val vector: Vector
     )
 
@@ -40,11 +45,9 @@ fun main() {
         input.robots()
             .forEach { robot: Robot ->
                 var pos = robot.position
-                println(pos)
                 repeat(100) {
                     pos += robot.vector
                     pos = Point((pos.x + maxX) % maxX, (pos.y + maxY) % maxY)
-                    println(pos)
                 }
                 when {
                     pos.x < (maxX / 2) && pos.y < (maxY / 2) -> q1++
@@ -59,7 +62,47 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return TODO()
+
+        val maxX = 101
+        val maxY = 103
+
+        var robots = input.robots()
+        var i = 0
+
+        val outputDir = File("output/day14")
+        outputDir.mkdirs()
+
+        repeat(10000) {
+
+            val image = BufferedImage(101, 103, BufferedImage.TYPE_INT_RGB)
+
+            for (x in 0 until 101) {
+                for (y in 0 until 103) {
+                    image.setRGB(
+                        x,
+                        y,
+                        when {
+                            robots.any { it.position == Point(x, y) } -> 0xffffff
+                            else -> 0x000000
+                        }
+                    )
+                }
+            }
+            ImageIO.write(image, "jpg", File(outputDir, "$i.jpg"))
+
+            robots = robots.map {
+                Robot(
+                    position = Point(
+                        x = (it.position.x + it.vector.x + maxX) % maxX,
+                        y = (it.position.y + it.vector.y + maxY) % maxY
+                    ),
+                    vector = it.vector
+                )
+            }
+
+            i++
+        }
+        return 0
     }
 
     val testInput = readInput("Day14_test")
@@ -67,6 +110,5 @@ fun main() {
 
     test(12) { part1(testInput, 11, 7) }
     exec { part1(input, 101, 103) }
-    test(TODO()) { part2(testInput) }
     exec { part2(input) }
 }
