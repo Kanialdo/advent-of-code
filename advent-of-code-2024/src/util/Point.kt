@@ -3,6 +3,7 @@ package util
 data class Point(val x: Int, val y: Int) {
 
     operator fun plus(vector: Vector) = Point(x + vector.x, y + vector.y)
+    operator fun minus(vector: Vector) = Point(x - vector.x, y - vector.y)
 
     override fun toString(): String {
         return "[$x, $y]"

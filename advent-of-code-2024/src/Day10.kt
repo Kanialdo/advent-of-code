@@ -41,7 +41,7 @@ fun main() {
 
         val array = Array2d.readNumbers(input)
 
-        return array.getPositions(9)
+        return array.findAll { it == 9 }
             .sumOf {
                 goDown(array, listOf(it), 9, it.x, it.y)
                     .filterNotNull()
@@ -55,7 +55,7 @@ fun main() {
 
         val array = Array2d.readNumbers(input)
 
-        return array.getPositions(0)
+        return array.findAll { it == 0 }
             .sumOf {
                 goUp(array, listOf(it), 0, it.x, it.y)
                     .filterNotNull()
