@@ -53,7 +53,50 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return TODO()
+
+        val mapInput = input.filter { it.contains(WALL) }
+            .map {
+                it.replace("$BOX", "$BOX_2_LEFT$BOX_2_RIGHT")
+                    .replace("$EMPTY", "$EMPTY$EMPTY")
+                    .replace("$WALL", "$WALL$WALL")
+                    .replace("$MACHINE", "$MACHINE$EMPTY")
+            }
+
+        val map = Array2d.readChar(mapInput)
+        val instructions = input.filter { it.any { it in INSTRUTCION_MAPPING.keys } }
+            .flatMap { it.toList() }
+            .mapNotNull { INSTRUTCION_MAPPING[it] }
+
+        var position = map.findAny { it == MACHINE }!!
+
+        instructions.forEach { vector ->
+
+            if (vector.isVertical()) {
+                TODO()
+            } else {
+                var head = position
+                val snake = mutableListOf(head)
+                while (map[head + vector] == BOX) {
+                    head += vector
+                    snake.add(head)
+                }
+                if (map[head + vector] == EMPTY) {
+                    snake.reversed().forEachIndexed { index, point ->
+                        map[point + vector] = map[point]
+                        if (index == snake.size - 1) {
+                            position = point + vector
+                            map[point] = EMPTY
+                        }
+                    }
+                }
+            }
+        }
+
+        // map.printChars()
+
+        val boxes = map.findAll { it == BOX_2_LEFT }
+
+        return boxes.sumOf { 100 * it.y + it.x }
     }
 
     val testInput = readInput("Day15_test")
