@@ -1,3 +1,5 @@
+import kotlin.math.abs
+
 fun main() {
 
     fun part1(input: List<String>): Int {
@@ -23,7 +25,31 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        TODO()
+
+        val movements = input.map {
+            val number = it.drop(1).toInt()
+            when (it.first()) {
+                'L' -> -number
+                'R' -> number
+                else -> error("Invalid direction")
+            }
+        }
+
+        var position = 50
+        var zeros = 0
+
+        movements.forEach { movement ->
+            zeros += abs(movement / 100)
+            val shortMovement = movement % 100
+            when {
+                position != 0 && position + shortMovement < 0 -> zeros++
+                position != 0 && position + shortMovement > 100 -> zeros++
+                (position + shortMovement) % 100 == 0 -> zeros++
+            }
+            position = (position + shortMovement + 100) % 100
+        }
+
+        return zeros
     }
 
     val testInput = readInput("Day01_test")
@@ -32,6 +58,6 @@ fun main() {
     test(3) { part1(testInput) }
     exec { part1(input) }
 
-    test(TODO()) { part2(testInput) }
+    test(6) { part2(testInput) }
     exec { part2(input) }
 }
