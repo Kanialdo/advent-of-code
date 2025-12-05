@@ -1,3 +1,5 @@
+import kotlin.math.pow
+
 fun main() {
 
     fun part1(input: List<String>): Int {
@@ -13,8 +15,19 @@ fun main() {
         }
     }
 
-    fun part2(input: List<String>): Int {
-        TODO()
+    fun part2(input: List<String>): Long {
+        return input.sumOf { line ->
+            var numbers = line.map { it.digitToInt() }
+            var output = 0L
+            for (i in 11.downTo(0)) {
+                val max = numbers.dropLast(i).max()
+                val maxIndex = numbers.indexOf(max)
+                numbers = numbers.drop(maxIndex + 1)
+                output += max * 10.0.pow(i).toLong()
+            }
+            println("$line -> $output")
+            output
+        }
     }
 
     val testInput = readInput("Day03_test")
@@ -23,6 +36,6 @@ fun main() {
     test(357) { part1(testInput) }
     exec { part1(input) }
 
-    test(TODO()) { part2(testInput) }
-    exec { part2(input) }
+    testLong(3121910778619) { part2(testInput) }
+    execLong { part2(input) }
 }
