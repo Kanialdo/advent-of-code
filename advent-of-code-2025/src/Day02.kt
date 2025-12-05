@@ -1,39 +1,39 @@
 fun main() {
 
     fun part1(input: List<String>): Long {
-
         return input.sumOf {
-            var sum = 0L
-            val (from, to) = it.split("-").map { it.toLong() }
-            for (i in from..to) {
-                val number = i.toString()
-                if (number.length % 2 == 0) {
-                    if (number.take(number.length / 2) == number.takeLast(number.length / 2)) {
-                        sum += i
-                    }
+            val (from, to) = it.split("-").map { str -> str.toLong() }
+            (from..to).sumOf { number ->
+                val str = number.toString()
+                when {
+                    str.length % 2 != 0 -> 0L
+                    str.take(str.length / 2) == str.takeLast(str.length / 2) -> number
+                    else -> 0L
                 }
             }
-            sum
         }
     }
 
     fun part2(input: List<String>): Long {
 
+        fun String.check(size: Int): Boolean {
+            if (this.length < size * 2) return false
+            val pattern = this.take(size)
+            return this.chunked(size).all { it == pattern }
+        }
+
         return input.sumOf {
-            var sum = 0L
-            val (from, to) = it.split("-").map { it.toLong() }
-            for (i in from..to) {
-                val number = i.toString()
-                sum += when {
-                    number.length >= 2 && number.chunked(1).all { it == number.take(1) } -> i
-                    number.length >= 4 && number.chunked(2).all { it == number.take(2) } -> i
-                    number.length >= 6 && number.chunked(3).all { it == number.take(3) } -> i
-                    number.length >= 8 && number.chunked(4).all { it == number.take(4) } -> i
-                    number.length >= 10 && number.chunked(5).all { it == number.take(5) } -> i
-                    else -> 0
-                }
+            val (from, to) = it.split("-").map { str -> str.toLong() }
+            (from..to).sumOf { number ->
+                val str = number.toString()
+                if (
+                    str.check(1) ||
+                    str.check(2) ||
+                    str.check(3) ||
+                    str.check(4) ||
+                    str.check(5)
+                ) number else 0L
             }
-            sum
         }
     }
 
