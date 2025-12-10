@@ -7,7 +7,10 @@ import kotlin.time.measureTime
 /**
  * Reads lines from the given input txt file.
  */
-fun readInput(name: String) = Path("src/$name.txt").readText().trim().lines()
+fun readInput(name: String, trim: Boolean = true) = Path("src/$name.txt")
+    .readText()
+    .let { if (trim) it.trim() else it }
+    .lines()
 
 /**
  * Converts string to md5 hash.
